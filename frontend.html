@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Gmail Sender</title>
+
+<!-- Google Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+
+<style>
+/* ===================== GLOBAL STYLES ===================== */
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background: #f7f8fa;
+}
+
+/* ===================== LOGIN PAGE ===================== */
+#loginPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-card {
+    width: 420px;
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    text-align: center;
+    border-top: 4px solid #ff4a3d;
+}
+
+.icon-circle {
+    background: #ffeceb;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-circle .material-icons-outlined {
+    font-size: 36px;
+    color: #ff4a3d;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 6px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #222;
+}
+
+p.subtitle {
+    margin-top: -5px;
+    font-size: 14px;
+    color: #555;
+}
+
+.input-group {
+    text-align: left;
+    margin: 18px 0;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.input-box {
+    position: relative;
+}
+
+.input-box .material-icons-outlined {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 20px;
+}
+
+.input-box input {
+    width: 90%;
+    padding: 12px 16px 12px 42px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+    transition: all .2s ease;
+}
+
+.input-box input:focus {
+    border-color: #ff4a3d;
+    box-shadow: 0 0 0 2px rgba(255,74,61,0.15);
+}
+
+.links {
+    text-align: left;
+    margin-top: 6px;
+}
+
+.links a {
+    color: #ff4a3d;
+    font-size: 14px;
+    text-decoration: none;
+    display: block;
+    margin-top: 4px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* ===================== BUTTONS ===================== */
+.btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn:hover {
+    background: #e9e9e9;
+}
+
+.red-btn {
+    width: 100%;
+    margin-top: 20px;
+    background: #ff4a3d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.red-btn:hover {
+    background: #e33a30;
+}
+
+.footer {
+    margin-top: 18px;
+    font-size: 14px;
+    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.footer .material-icons-outlined {
+    font-size: 18px;
+    margin-left: 6px;
+    transition: .2s ease;
+}
+
+.footer:hover {
+    color: #444;
+}
+
+#helpContent {
+    display: none;
+    text-align:left;
+    margin-top:12px;
+    font-size:14px;
+    color:#555;
+    background:#fff3f1;
+    padding:12px;
+    border-radius:6px;
+    border:1px solid #ffd8d1;
+}
+
+/* ===================== DASHBOARD PAGE ===================== */
+#dashboardPage {
+    display: none;
+}
+
+body.dashboard {
+    background: #f7f8fa;
+    display: block;
+}
+
+.navbar {
+    background: #fff;
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e5e5;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.nav-left .icon {
+    width: 38px;
+    height: 38px;
+    background: #ffe9e7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-left .icon .material-icons-outlined {
+    color: #ff4a3d;
+    font-size: 22px;
+}
+
+.email-text {
+    font-size: 13px;
+    color: #555;
+    margin-top: -4px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-btn {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-btn:hover {
+    background: #f2f2f2;
+}
+
+.container {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+}
+
+.card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    border: 1px solid #e5e5e5;
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card h3 .material-icons-outlined {
+    font-size: 20px;
+    color: #444;
+}
+
+.upload-box {
+    border: 2px dashed #d8d8d8;
+    border-radius: 12px;
+    padding: 40px 20px;
+    texttext-align: center;
+    margin-top: 16px;
+}
+
+.upload-box .material-icons-outlined {
+    font-size: 48px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.upload-box p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+textarea, input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+    font-size: 14px;
+    margin-top: 8px;
+    resize: vertical;
+}
+
+textarea:focus, input:focus {
+    border-color: #ff4a3d;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255,74,61,0.16);
+}
+
+.small-label {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #444;
+}
+
+.send-btn {
+    width: 100%;
+    background: #ff4a3d;
+    color: #fff;
+    border: none;
+    padding: 14px 20px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    transition: 0.2s;
+}
+
+.send-btn:hover {
+    background: #e33a30;
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN PAGE ===================== -->
+<div id="loginPage">
+    <div class="login-card">
+        <div class="icon-circle">
+            <span class="material-icons-outlined">mail</span>
+        </div>
+
+        <h2>AI Gmail Sender</h2>
+        <p class="subtitle">Sign in with your Gmail App Password</p>
+
+        <div class="input-group">
+            <label>Gmail Address</label>
+            <div class="input-box">
+                <span class="material-icons-outlined">email</span>
+                <input type="email" id="emailInput" placeholder="your.email@gmail.com">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Gmail App Password (16-digit)</label>
+            <div class="input-box">
+                <span class="material-icons-outlined">lock</span>
+                <input type="password" id="passwordInput" placeholder="xxxx xxxx xxxx xxxx">
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="#">✔ Enable 2-Step Verification</a>
+            <a href="#">✔ Create Gmail App Password</a>
+        </div>
+
+        <button class="red-btn" id="signInBtn">Sign In</button>
+
+        <div class="footer" id="helpFooter">
+            <span>How to Enable 2FA & Create App Password</span>
+            <span class="material-icons-outlined" id="expandIcon">expand_more</span>
+        </div>
+
+        <div id="helpContent">
+            <strong>Step 1 - Turn ON 2-Step Verification</strong>
+            <ol style="padding-left:20px;">
+                <li>Open Google Security Settings</li>
+                <li>Scroll to "Signing in to Google"</li>
+                <li>Click 2-Step Verification</li>
+                <li>Turn it ON</li>
+            </ol>
+            <strong>Step 2 - Create Gmail App Password</strong>
+            <ol style="padding-left:20px;">
+                <li>Go to App Passwords page</li>
+                <li>Sign in again</li>
+                <li>Select <strong>Mail</strong></li>
+                <li>Select <strong>Other (Custom)</strong></li>
+                <li>Type: <strong>AI Gmail Sender</strong></li>
+                <li>Click <strong>Generate</strong></li>
+                <li>Copy the 16-digit password</li>
+            </ol>
+            <strong>Important Notes:</strong>
+            <ul style="padding-left:20px;">
+                <li>Normal Gmail password will NOT work</li>
+                <li>App Password works even if less-secure apps are blocked</li>
+                <li>You can delete & regenerate anytime</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== DASHBOARD PAGE ===================== -->
+<div id="dashboardPage">
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <div class="nav-left">
+            <div class="icon"><span class="material-icons-outlined">mail</span></div>
+            <div>
+                AI Gmail Sender
+                <div class="email-text" id="userEmail">nabeelrafique101@gmail.com</div>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <button class="nav-btn">
+                <span class="material-icons-outlined">settings</span>
+            </button>
+
+            <button class="nav-btn" id="logoutBtn">
+                <span class="material-icons-outlined">logout</span> Logout
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Upload Contacts -->
+        <div class="card">
+            <h3><span class="material-icons-outlined">upload</span> Upload Contacts</h3>
+            <div class="upload-box">
+                <span class="material-icons-outlined">group</span>
+                <p>Upload a CSV file with name and email columns</p>
+                <button class="btn"><span class="material-icons-outlined" style="font-size:16px;">upload_file</span> Choose CSV File</button>
+                <button class="btn">Download Sample</button>
+            </div>
+        </div>
+
+        <!-- AI Email Generator -->
+        <div class="card">
+            <h3><span class="material-icons-outlined">auto_fix_high</span> AI Email Generator</h3>
+            <label class="small-label">Email Description</label>
+            <textarea rows="5" placeholder="Describe what the email should be about..."></textarea>
+            <button class="red-btn">
+                <span class="material-icons-outlined" style="vertical-align:middle;margin-right:6px;">auto_awesome</span>
+                Auto Generate Subject & Email
+            </button>
+        </div>
+
+        <!-- Attachments -->
+        <div class="card">
+            <h3><span class="material-icons-outlined">attach_file</span> Attachments</h3>
+            <button class="btn" style="margin-top:10px;">
+                <span class="material-icons-outlined" style="font-size:16px;">add</span> Add Attachments
+            </button>
+        </div>
+
+        <!-- Email Content -->
+        <div class="card">
+            <h3><span class="material-icons-outlined">mail_outline</span> Email Content</h3>
+            <label class="small-label">Subject</label>
+            <input type="text" placeholder="Email subject line">
+            <label class="small-label" style="margin-top:14px;">Email Body (Use {{name}} for personalization)</label>
+            <textarea rows="8" placeholder="Write your email content here..."></textarea>
+            <button class="send-btn">
+                <span class="material-icons-outlined" style="font-size:18px;">send</span>
+                Send to 0 Recipients
+            </button>
+        </div>
+    </div>
+</div>
+<label class="small-label">Subject</label>
+<input type="text" id="emailSubject" placeholder="Email subject line">
+<label class="small-label" style="margin-top:14px;">Email Body (Use {{name}} for personalization)</label>
+<textarea id="emailBody" rows="8" placeholder="Write your email content here..."></textarea>
+
+<!-- ===================== BACKEND CONNECTED JAVASCRIPT ===================== -->
+<script>
+const API_BASE = "http://localhost:8000";
+const generateBtn = document.querySelector(".red-btn"); // AI Email Generator button
+const emailDescription = document.querySelector("textarea"); // Description input
+const emailSubject = document.getElementById("emailSubject");
+const emailBody = document.getElementById("emailBody");
+
+generateBtn.addEventListener("click", () => {
+    const desc = emailDescription.value.trim().toLowerCase();
+
+    if(!desc){
+        alert("Please enter an email description.");
+        return;
+    }
+
+    let subject = "";
+    let body = "";
+
+    // Simple rules for demo, can be extended
+    if(desc.includes("meeting") && desc.includes("today")){
+        subject = "Today's Meeting Schedule";
+        body = `Hello {{name}},\n\nJust a reminder about our meetings scheduled for today. Please check your calendar for timings.\n\nBest regards,\nYour Team`;
+    } else if(desc.includes("follow up")){
+        subject = "Follow-Up on Previous Discussion";
+        body = `Hi {{name}},\n\nI wanted to follow up on our previous discussion. Let me know your thoughts.\n\nRegards,\nYour Name`;
+    } else {
+        subject = "Regarding " + desc;
+        body = `Hello {{name}},\n\n${desc}.\n\nBest,\nYour Name`;
+    }
+
+    emailSubject.value = subject;
+    emailBody.value = body;
+});
+
+// LOGIN ELEMENTS
+const signInBtn = document.getElementById("signInBtn");
+const loginPage = document.getElementById("loginPage");
+const dashboardPage = document.getElementById("dashboardPage");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const userEmail = document.getElementById("userEmail");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// HELP FOOTER TOGGLE
+const helpFooter = document.getElementById("helpFooter");
+const helpContent = document.getElementById("helpContent");
+const expandIcon = document.getElementById("expandIcon");
+
+helpFooter.addEventListener("click", () => {
+    if(helpContent.style.display === "none"){
+        helpContent.style.display = "block";
+        expandIcon.textContent = "expand_less";
+    } else {
+        helpContent.style.display = "none";
+        expandIcon.textContent = "expand_more";
+    }
+});
+
+// LOGIN → BACKEND
+signInBtn.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    const appPassword = passwordInput.value.trim();
+
+    if (!email || !appPassword) {
+        alert("Please enter both Gmail and App Password.");
+        return;
+    }
+
+    const response = await fetch(`${API_BASE}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, app_password: appPassword })
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+        loginPage.style.display = "none";
+        dashboardPage.style.display = "block";
+        document.body.classList.add("dashboard");
+        userEmail.textContent = email;
+
+        window.senderEmail = email;
+        window.senderPassword = appPassword;
+
+    } else {
+        alert("Login failed: " + result.message);
+    }
+});
+
+// LOGOUT
+logoutBtn.addEventListener("click", () => {
+    dashboardPage.style.display = "none";
+    loginPage.style.display = "flex";
+    document.body.classList.remove("dashboard");
+});
+
+// GLOBAL STATE
+let contactsList = [];
+let uploadedAttachments = [];
+
+// UPLOAD CSV
+document.querySelectorAll(".btn")[0].addEventListener("click", () => {
+    const chooseFile = document.createElement("input");
+    chooseFile.type = "file";
+    chooseFile.accept = ".csv";
+    chooseFile.click();
+
+    chooseFile.onchange = async () => {
+        const file = chooseFile.files[0];
+        if (!file) return;
+
+        const fd = new FormData();
+        fd.append("file", file);
+
+        const response = await fetch(`${API_BASE}/upload_csv`, {
+            method: "POST",
+            body: fd
+        });
+
+        const result = await response.json();
+        contactsList = result.contacts || [];
+
+        alert("Uploaded " + contactsList.length + " contacts");
+
+        updateSendButton();
+    };
+});
+
+// UPLOAD ATTACHMENT
+document.querySelectorAll(".btn")[2].addEventListener("click", () => {
+    const picker = document.createElement("input");
+    picker.type = "file";
+    picker.accept = "*/*";
+    picker.click();
+
+    picker.onchange = async () => {
+        const file = picker.files[0];
+        if (!file) return;
+
+        const fd = new FormData();
+        fd.append("file", file);
+
+        const response = await fetch(`${API_BASE}/upload_attachment`, {
+            method: "POST",
+            body: fd
+        });
+
+        const result = await response.json();
+        uploadedAttachments.push(result.filename);
+
+        alert("Attachment uploaded: " + result.filename);
+    };
+});
+
+// AI GENERATE EMAIL
+document.querySelectorAll(".red-btn")[1].addEventListener("click", async () => {
+    const description = document.querySelectorAll("textarea")[0].value.trim();
+
+    if (!description) {
+        alert("Please enter a description first.");
+        return;
+    }
+
+    const response = await fetch(`${API_BASE}/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description })
+    });
+
+    const result = await response.json();
+    const text = result.result || "";
+
+    const subject = text.split("Subject:")[1]?.split("Body:")[0]?.trim() || "";
+    const body = text.split("Body:")[1]?.trim() || text;
+
+    document.querySelector("input[type='text']").value = subject;
+    document.querySelectorAll("textarea")[1].value = body;
+});
+
+// SEND EMAILS
+document.querySelector(".send-btn").addEventListener("click", async () => {
+    const subject = document.querySelector("input[type='text']").value.trim();
+    const body = document.querySelectorAll("textarea")[1].value.trim();
+
+    if (!contactsList.length) {
+        alert("Upload a contact CSV first.");
+        return;
+    }
+
+    if (!subject || !body) {
+        alert("Subject & body cannot be empty.");
+        return;
+    }
+
+    const response = await fetch(`${API_BASE}/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            sender_email: window.senderEmail,
+            sender_password: window.senderPassword,
+            subject,
+            body,
+            contacts: contactsList,
+            attachments: uploadedAttachments
+        })
+    });
+
+    const result = await response.json();
+    console.log(result);
+    alert("Emails sent!");
+});
+
+// UPDATE BUTTON TEXT
+function updateSendButton() {
+    document.querySelector(".send-btn").innerHTML =
+        ` <span class="material-icons-outlined" style="font-size:18px;">send</span> Send to ${contactsList.length} Recipients `;
+}
+</script>
+
+</body>
+</html>
